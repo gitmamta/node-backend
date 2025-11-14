@@ -5,13 +5,11 @@ node_modules/
 logs/
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Environment files
+# Environment variables
 .env
 
-# Build output (if any)
+# Build output
 dist/
 build/
 
@@ -22,6 +20,3 @@ Thumbs.db
 # IDE/editor settings
 .vscode/
 .idea/
-
-# Optional: coverage reports
-coverage/
