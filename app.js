@@ -15,7 +15,7 @@ const cors=require("cors");
 
 // app.use(cors());
 app.use(cors({
-  origin: "http://localhost:4200" // allow only Angular frontend
+  origin: "https://mamtapalace.netlify.app" // allow only Angular frontend
 }));
 
 app.use(express.json());
