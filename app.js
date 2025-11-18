@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/bookings", bookingRoutes);
-app.use("api/bookings/update/:id",bookingRoutes);
+
 
 app.use("/api/staffs", staffRoutes);
 app.use("/api/meetings",meetingRoutes);

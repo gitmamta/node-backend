@@ -32,6 +32,28 @@ router.get("/:id", async (req, res) => {
 });
 
 
+router.put("/update/:id", async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const updateData = req.body; // full edit data
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBooking) return res.status(404).json({ message: "Booking not found" });
+
+    res.status(200).json({
+      message: "Booking updated successfully",
+      booking: updatedBooking
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 // PUT /api/bookings/:id
@@ -54,27 +76,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.put("/update/:id", async (req, res) => {
-  try {
-    const bookingId = req.params.id;
-    const updateData = req.body; // full edit data
-
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      bookingId,
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedBooking) return res.status(404).json({ message: "Booking not found" });
-
-    res.status(200).json({
-      message: "Booking updated successfully",
-      booking: updatedBooking
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
 
 
