@@ -54,7 +54,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.put("/:id/edit", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
     const bookingId = req.params.id;
     const updateData = req.body; // full edit data
