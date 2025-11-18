@@ -15,8 +15,10 @@ const cors=require("cors");
 
 // app.use(cors());
 app.use(cors({
-  origin: "https://mamtapalace.netlify.app" // allow only Angular frontend
+  origin:  ["https://mamtapalace.netlify.app","http://localhost:4200","https://node-backend-uhgx.onrender.com"],
+  methods: "GET,POST,PUT,PATCH,DELETE",
 }));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
