@@ -19,6 +19,61 @@ router.get("/", async (req, res) => {
   res.json(bookings);
 });
 
+
+
+
+// PATCH /api/bookings/:id/cancel  (soft delete)
+router.patch('/cancel/:id', async (req, res) => {
+   console.log("PATCH /:id/cancel called with ID:", req.params.id);
+  try {
+    const bookingId = req.params.id;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: "cancelled" },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json({
+      message: "Booking cancelled successfully",
+      booking: updatedBooking
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// PUT /api/bookings/:id  (full update)
+router.put('/:id', async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json({
+      message: "Booking updated successfully",
+      booking: updatedBooking
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
 router.get("/:id", async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -27,51 +82,6 @@ router.get("/:id", async (req, res) => {
     }
     res.json(booking); // <-- make sure it's a single object
   } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-
-router.put("/update/:id", async (req, res) => {
-  try {
-    const bookingId = req.params.id;
-    const updateData = req.body; // full edit data
-
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      bookingId,
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedBooking) return res.status(404).json({ message: "Booking not found" });
-
-    res.status(200).json({
-      message: "Booking updated successfully",
-      booking: updatedBooking
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-
-
-// PUT /api/bookings/:id
-router.put('/:id', async (req, res) => {
-  console.log('PUT body:', req.body); 
-  try {
-    const bookingId = req.params.id;
-    const updateData = req.body; // { status: 'cancelled' }
-
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      bookingId,
-      updateData,
-      { new: true } // return updated document
-    );
-
-    res.status(200).json(updatedBooking);
-  } catch (err) {
-    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });
