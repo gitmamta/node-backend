@@ -33,5 +33,17 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+// Search by name or ID
+router.get('/search', async (req, res) => {
+  const keyword = req.query.keyword || '';
+  const results = await Staff.find({
+    $or: [
+      { staffName: { $regex: keyword, $options: 'i' } },
+      { _id: { $regex: keyword, $options: 'i' } }
+    ]
+  });
+  res.json(results);
+});
+
 
 module.exports = router;

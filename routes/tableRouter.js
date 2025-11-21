@@ -50,6 +50,24 @@ router.post("/bulk", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+// PUT / PATCH to update booking (confirm or edit)
+router.patch("/:id", async (req, res) => {
+  try {
+    
+    const updatedBooking = await TableBooking.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } // return updated document
+    );
+
+    if (!updatedBooking)
+      return res.status(404).json({ message: "Booking not found" });
+
+    res.json(updatedBooking);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // DELETE a booking by ID
 

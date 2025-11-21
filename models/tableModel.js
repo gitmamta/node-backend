@@ -5,7 +5,7 @@ const tableBookingSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  phone: { 
+  phoneNo: { 
     type: String,
     required: true
   },
@@ -17,9 +17,10 @@ const tableBookingSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  guests: {
+  guest: {
     type: Number,
     required: true
+   
   },
   specialRequest: {
     type: String,
