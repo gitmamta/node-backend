@@ -46,6 +46,30 @@ router.patch('/cancel/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+// PATCH /api/bookings/:id  (update specific fields like confirmed)
+router.patch('/:id', async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json({
+      message: "Booking updated successfully",
+      booking: updatedBooking
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 
 // PUT /api/bookings/:id  (full update)
