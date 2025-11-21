@@ -26,10 +26,10 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const booking = new TableBooking({
     name: req.body.name,
-    phoneNo: req.body.phone,
+    phoneNo: req.body.phoneNo,
     date: req.body.date,
     time: req.body.time,
-    guest: req.body.guests,
+    guest: req.body.guest,
     specialRequest: req.body.specialRequest
   });
 
