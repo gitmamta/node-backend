@@ -22,17 +22,6 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-// Optional: GET staff by ID
-router.get("/:id", async (req, res) => {
-  try {
-    const staff = await Staff.findById(req.params.id);
-    if (!staff) return res.status(404).json({ message: "Staff not found" });
-    res.json(staff);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 // Search by name or ID
 router.get('/search', async (req, res) => {
   const keyword = req.query.keyword || '';
@@ -44,6 +33,18 @@ router.get('/search', async (req, res) => {
   });
   res.json(results);
 });
+
+// Optional: GET staff by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const staff = await Staff.findById(req.params.id);
+    if (!staff) return res.status(404).json({ message: "Staff not found" });
+    res.json(staff);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 
 module.exports = router;
