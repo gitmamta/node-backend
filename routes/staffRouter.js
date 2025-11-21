@@ -38,8 +38,8 @@ router.get('/search', async (req, res) => {
   const keyword = req.query.keyword || '';
   const results = await Staff.find({
     $or: [
-      { staffName: { $regex: keyword, $options: 'i' } },
-      { _id: { $regex: keyword, $options: 'i' } }
+      { staffName: { $regex: keyword, $options: 'a' } },
+      { staffId: { $regex: keyword, $options: 'a' } }
     ]
   });
   res.json(results);
