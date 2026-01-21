@@ -1,4 +1,3 @@
-// routes/authRouter.js
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -7,11 +6,11 @@ const User = require("../models/userModel");
 
 // =================== REGISTER ===================
 router.post("/register", async (req, res) => {
-  const { username, password, role } = req.body;
+  const { fname, lname, email, phone, password, role } = req.body;
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ msg: "User already exists" });
     }
@@ -21,9 +20,12 @@ router.post("/register", async (req, res) => {
 
     // Create new user
     const newUser = new User({
-      username,
+      fname,
+      lname,
+      email,
+      phone,
       password: hashedPassword,
-      role: role || "User", // default role
+      role: role || "User",
     });
 
     await newUser.save();
@@ -37,25 +39,34 @@ router.post("/register", async (req, res) => {
 
 // =================== LOGIN ===================
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    // Find user by email
+    const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "Invalid credentials" });
 
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
     // Generate JWT including role
     const token = jwt.sign(
-      { id: user._id, role: user.role, username: user.username },
+      { id: user._id, role: user.role, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     res.json({
       token,
-      user: { id: user._id, username: user.username, role: user.role },
+      user: {
+        id: user._id,
+        fname: user.fname,
+        lname: user.lname,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
     });
   } catch (err) {
     console.error(err);
