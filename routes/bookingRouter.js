@@ -1,9 +1,12 @@
 const express=require("express");
 const router=express.Router();
 const Booking=require("../models/bookingModel");
+const authMiddleware=require("../middleware/authBearer");
+const roleMiddleware=require("../middleware/roleCheck");
 
 
-router.post("/", async (req, res) => {
+
+router.post("/",authMiddleware, async (req, res) => {
   try {
     console.log("Booking received:", req.body);
     const newBooking = new Booking(req.body);
@@ -14,7 +17,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/",authMiddleware,roleMiddleware('Admin'), async (req, res) => {
   const bookings = await Booking.find();
   res.json(bookings);
 });
@@ -23,7 +26,7 @@ router.get("/", async (req, res) => {
 
 
 // PATCH /api/bookings/:id/cancel  (soft delete)
-router.patch('/cancel/:id', async (req, res) => {
+router.patch('/cancel/:id',authMiddleware,roleMiddleware('Admin','User'),async (req, res) => {
    console.log("PATCH /:id/cancel called with ID:", req.params.id);
   try {
     const bookingId = req.params.id;
@@ -47,7 +50,7 @@ router.patch('/cancel/:id', async (req, res) => {
   }
 });
 // PATCH /api/bookings/:id  (update specific fields like confirmed)
-router.patch('/:id', async (req, res) => {
+router.patch('/:id',authMiddleware,roleMiddleware('Admin','User'),async (req, res) => {
   try {
     const bookingId = req.params.id;
 
@@ -73,7 +76,7 @@ router.patch('/:id', async (req, res) => {
 
 
 // PUT /api/bookings/:id  (full update)
-router.put('/:id', async (req, res) => {
+router.put('/:id', authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   try {
     const bookingId = req.params.id;
 
@@ -98,7 +101,7 @@ router.put('/:id', async (req, res) => {
 
 
 
-router.get("/:id", async (req, res) => {
+router.get("/:id",authMiddleware,async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {

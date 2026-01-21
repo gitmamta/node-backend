@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const TableBooking = require("../models/tableModel"); 
+const authMiddleware=require("../middleware/authBearer");
+const roleMiddleware=require("../middleware/roleCheck");
 
-router.get("/", async (req, res) => {
+router.get("/",authMiddleware, async (req, res) => {
   try {
     const bookings = await TableBooking.find();
     res.status(200).json(bookings);
@@ -12,7 +14,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.get("/:id", async (req, res) => {
+router.get("/:id",authMiddleware, async (req, res) => {
   try {
     const booking = await TableBooking.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });
@@ -23,7 +25,7 @@ router.get("/:id", async (req, res) => {
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/",authMiddleware,roleMiddleware('Admin'), async (req, res) => {
   const booking = new TableBooking({
     name: req.body.name,
     phoneNo: req.body.phoneNo,
@@ -42,7 +44,7 @@ router.post("/", async (req, res) => {
 });
 
 // POST multiple bookings at once
-router.post("/bulk", async (req, res) => {
+router.post("/bulk",authMiddleware,roleMiddleware('Admin'), async (req, res) => {
   try {
     const bookings = await TableBooking.insertMany(req.body);
     res.status(201).json(bookings);
@@ -51,7 +53,7 @@ router.post("/bulk", async (req, res) => {
   }
 });
 // PUT / PATCH to update booking (confirm or edit)
-router.patch("/:id", async (req, res) => {
+router.patch("/:id",authMiddleware,roleMiddleware('Admin') ,async (req, res) => {
   try {
     
     const updatedBooking = await TableBooking.findByIdAndUpdate(
@@ -71,7 +73,7 @@ router.patch("/:id", async (req, res) => {
 
 // DELETE a booking by ID
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authMiddleware, async (req, res) => {
   try {
     const booking = await TableBooking.findByIdAndDelete(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });

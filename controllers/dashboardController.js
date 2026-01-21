@@ -1,14 +1,12 @@
-const Product = require("../model/productModel");
 exports.getDashboard = async (req, res) => {
   try {
-    const products = (await Product.find()) || [];
-
-    res.render("dashboard", {
-      user: req.user,
-      products,
+    // Just send a success message, Angular will show the page
+    res.json({
+      message: "Welcome to Admin Dashboard",
+      user: req.user, // optional, can include email, role, etc.
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).json({ message: "Server Error" });
   }
 };

@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Staff = require("../models/staffModel");
+const authMiddleware=require("../middleware/authBearer");
+const roleMiddleware=require("../middleware/roleCheck");
 
 // GET all staff
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware,async (req, res) => {
   try {
     const staffList = await Staff.find();
     res.json(staffList);
@@ -13,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // POST a new staff
-router.post("/", async (req, res) => {
+router.post("/",authMiddleware,roleMiddleware('Admin'), async (req, res) => {
   try {
     const newStaff = new Staff(req.body);
     await newStaff.save();
@@ -23,7 +25,7 @@ router.post("/", async (req, res) => {
   }
 });
 // Search by name or ID
-router.get('/search', async (req, res) => {
+router.get('/search',authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   const keyword = req.query.keyword || '';
   const results = await Staff.find({
     $or: [
@@ -35,7 +37,7 @@ router.get('/search', async (req, res) => {
 });
 
 // Optional: GET staff by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id",authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   try {
     const staff = await Staff.findById(req.params.id);
     if (!staff) return res.status(404).json({ message: "Staff not found" });

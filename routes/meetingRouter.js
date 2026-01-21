@@ -1,9 +1,11 @@
 const  express=require("express");
 const router = express.Router();
 const Meeting=require("../models/meetingModel");
+const authMiddleware=require("../middleware/authBearer");
+const roleMiddleware=require("../middleware/roleCheck");
 
 // ✅ Get all meetings
-router.get("/", async (req, res) => {
+router.get("/",authMiddleware, async (req, res) => {
   try {
     const meetings = await Meeting.find();
     res.status(200).json(meetings);
@@ -13,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // ✅ Get a single meeting by id
-router.get("/:id", async (req, res) => {
+router.get("/:id",authMiddleware, async (req, res) => {
   try {
     const meeting = await Meeting.findOne({ id: req.params.id });
     if (!meeting) return res.status(404).json({ message: "Meeting not found" });
@@ -24,7 +26,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // ✅ Create a new meeting
-router.post("/", async (req, res) => {
+router.post("/",authMiddleware,roleMiddleware('Admin') ,async (req, res) => {
   try {
     const newMeeting = new Meeting(req.body);
     const savedMeeting = await newMeeting.save();
@@ -35,7 +37,7 @@ router.post("/", async (req, res) => {
 });
 
 // ✅ Update an existing meeting
-router.put("/:id", async (req, res) => {
+router.put("/:id",authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   try {
     const updatedMeeting = await Meeting.findOneAndUpdate(
       { id: req.params.id },
@@ -50,7 +52,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // ✅ Delete a meeting
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   try {
     const deletedMeeting = await Meeting.findOneAndDelete({ id: req.params.id });
     if (!deletedMeeting) return res.status(404).json({ message: "Meeting not found" });

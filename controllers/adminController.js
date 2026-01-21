@@ -1,25 +1,11 @@
-// exports.dashboard = (req,res)=>{
-//     res.render("dashboard",{role:"Admin",user:req.user,
-//     })
-// }
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const authorize = require('../middleware/roleMiddleware');
 
-const Product = require("../model/productModel");
+// Only Admin can access this route
+router.get('/dashboard', authMiddleware, authorize('Admin'), (req, res) => {
+  res.json({ message: "Welcome to Admin Dashboard" });
+});
 
-exports.dashboard = async (req, res) => {
-    try {
-        console.log("req.user", req.user);
-
-        // Fetch all products from MongoDB
-        const products = await Product.find();
-
-        // Pass products to EJS
-        res.render("dashboard", {
-            user: req.user,
-            products   // <--- this is essential
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
-    }
-};
+module.exports = router;

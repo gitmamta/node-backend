@@ -1,10 +1,11 @@
 const express=require("express");
 const Menu=require("../models/menuModel");
-
 const router = express.Router();
+const authMiddleware=require("../middleware/authBearer");
+const roleMiddleware=require("../middleware/roleCheck");
 
 
-router.get("/", async (req, res) => {
+router.get("/",authMiddleware, async (req, res) => {
   try {
     const menuItems = await Menu.find();
     res.json(menuItems);
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.get("/:id", async (req, res) => {
+router.get("/:id",authMiddleware, async (req, res) => {
   try {
     const menuItem = await Menu.findOne({ id: req.params.id });
     if (!menuItem) return res.status(404).json({ message: "Menu item not found" });
@@ -25,7 +26,7 @@ router.get("/:id", async (req, res) => {
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/",authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   const menuItem = new Menu(req.body);
   try {
     const newItem = await menuItem.save();
@@ -36,7 +37,7 @@ router.post("/", async (req, res) => {
 });
 
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   try {
     const updatedItem = await Menu.findOneAndUpdate(
       { id: req.params.id },
@@ -51,7 +52,7 @@ router.put("/:id", async (req, res) => {
 });
 
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authMiddleware,roleMiddleware('Admin'), async (req, res) => {
   try {
     const deletedItem = await Menu.findOneAndDelete({ id: req.params.id });
     if (!deletedItem) return res.status(404).json({ message: "Menu item not found" });

@@ -2,12 +2,16 @@
 require('dotenv').config();
 const express=require("express")
 const app=express();
-const cookieParser=require("cookie-parser")
+// const cookieParser=require("cookie-parser")
 const mongoose = require("mongoose");
 const connectDB = require("./config/mongo");
 const path = require("path");
 const dotenv=require("dotenv")
 const port = process.env.PORT ;
+// const protectedRoutes = require("./routes/protectedRoutes");
+
+
+
 
 dotenv.config();
 connectDB();
@@ -32,6 +36,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
+
+
+
 app.use("/api/bookings", bookingRoutes);
 
 
@@ -41,6 +50,7 @@ app.use("/api/menu",menuRoutes);
 app.use("/api/rooms",roomsRoutes);
 app.use("/api/tableBookings",tableRoutes);
 app.use("/api/auth",authRoutes);
+// app.use("/api/protected", protectedRoutes); // role-protected routes
 
 
 
