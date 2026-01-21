@@ -2,8 +2,16 @@
 require('dotenv').config();
 const express=require("express")
 const app=express();
+const cookieParser=require("cookie-parser")
 const mongoose = require("mongoose");
+const connectDB = require("./config/mongo");
+const path = require("path");
+const dotenv=require("dotenv")
 const port = process.env.PORT ;
+
+dotenv.config();
+connectDB();
+
 
 const bookingRoutes=require("./routes/bookingRouter");
 const staffRoutes=require("./routes/staffRouter");
@@ -11,6 +19,7 @@ const meetingRoutes=require("./routes/meetingRouter");
 const menuRoutes=require("./routes/menuRouter");
 const roomsRoutes=require("./routes/roomRouter");
 const tableRoutes=require("./routes/tableRouter");
+const authRoutes=require("./routes/authRouter");
 const cors=require("cors");
 
 // app.use(cors());
@@ -30,15 +39,22 @@ app.use("/api/staffs", staffRoutes);
 app.use("/api/meetings",meetingRoutes);
 app.use("/api/menu",menuRoutes);
 app.use("/api/rooms",roomsRoutes);
-app.use("/api/tableBookings",tableRoutes)
-
-
-mongoose.connect("mongodb+srv://root:root@cluster0.w5afnlb.mongodb.net/bookingDB?appName=Cluster0").then(()=>console.log("Mongodb connected !")).catch((err)=>console.log("Mongo connect Error",err))
-
+app.use("/api/tableBookings",tableRoutes);
+app.use("/api/auth",authRoutes);
 
 
 
 
 
+app.get("/api/test", (req, res) => {
+  res.json({ msg: "API OK" });
+});
 
-app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+
+
+
+
+// app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+app.listen(process.env.PORT, () =>
+  console.log(`Server running http://localhost:${process.env.PORT}`)
+);
