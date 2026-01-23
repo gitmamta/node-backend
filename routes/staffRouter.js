@@ -5,7 +5,7 @@ const authMiddleware=require("../middleware/authBearer");
 const roleMiddleware=require("../middleware/roleCheck");
 
 // GET all staff
-router.get("/", authMiddleware,async (req, res) => {
+router.get("/", authMiddleware,roleMiddleware('Admin'),async (req, res) => {
   try {
     const staffList = await Staff.find();
     res.json(staffList);

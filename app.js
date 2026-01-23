@@ -50,7 +50,7 @@ app.use("/api/menu",menuRoutes);
 app.use("/api/rooms",roomsRoutes);
 app.use("/api/tableBookings",tableRoutes);
 app.use("/api/auth",authRoutes);
-// app.use("/api/protected", protectedRoutes); // role-protected routes
+
 
 
 
@@ -65,6 +65,14 @@ app.get("/api/test", (req, res) => {
 
 
 // app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
-app.listen(process.env.PORT, () =>
-  console.log(`Server running http://localhost:${process.env.PORT}`)
-);
+// app.listen(process.env.PORT, () =>
+//   console.log(`Server running http://localhost:${process.env.PORT}`)
+// );
+
+connectDB().then(() => {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+}).catch(err => {
+  console.error("Failed to start server due to DB error:", err);
+  process.exit(1);
+});

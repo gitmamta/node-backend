@@ -6,6 +6,7 @@ const User = require("../models/userModel");
 
 // =================== REGISTER ===================
 router.post("/register", async (req, res) => {
+   console.log("Body received:", req.body);
   const { fname, lname, email, phone, password, role } = req.body;
 
   try {
